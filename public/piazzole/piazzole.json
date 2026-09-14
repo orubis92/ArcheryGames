@@ -1,0 +1,92 @@
+[
+  {
+    "id": "es-01",
+    "foto": "piazzole/es-01.svg",
+    "distanza": 14,
+    "sagoma": "Cinghiale",
+    "gruppo": 1,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-02",
+    "foto": "piazzole/es-02.svg",
+    "distanza": 12.5,
+    "sagoma": "Lepre",
+    "gruppo": 4,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-03",
+    "foto": "piazzole/es-03.svg",
+    "distanza": 33,
+    "sagoma": "Cervo",
+    "gruppo": 1,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-04",
+    "foto": "piazzole/es-04.svg",
+    "distanza": 21,
+    "sagoma": "Volpe",
+    "gruppo": 3,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-05",
+    "foto": "piazzole/es-05.svg",
+    "distanza": 27.5,
+    "sagoma": "Cinghiale",
+    "gruppo": 1,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-06",
+    "foto": "piazzole/es-06.svg",
+    "distanza": 42,
+    "sagoma": "Cervo",
+    "gruppo": 1,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-07",
+    "foto": "piazzole/es-07.svg",
+    "distanza": 16,
+    "sagoma": "Volpe",
+    "gruppo": 3,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-08",
+    "foto": "piazzole/es-08.svg",
+    "distanza": 9,
+    "sagoma": "Lepre",
+    "gruppo": 4,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-09",
+    "foto": "piazzole/es-09.svg",
+    "distanza": 36,
+    "sagoma": "Cinghiale",
+    "gruppo": 1,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  },
+  {
+    "id": "es-10",
+    "foto": "piazzole/es-10.svg",
+    "distanza": 24,
+    "sagoma": "Cervo",
+    "gruppo": 2,
+    "campo": "Esempio sintetico",
+    "esempio": true
+  }
+]

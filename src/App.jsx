@@ -3,6 +3,7 @@ import Hub from './components/Hub.jsx';
 import InArrivo from './components/InArrivo.jsx';
 import Giudice from './games/giudice/Giudice.jsx';
 import GalleriaSagome from './games/giudice/GalleriaSagome.jsx';
+import Piazzola from './games/piazzola/Piazzola.jsx';
 import { GIOCHI } from './giochi.js';
 
 // Routing minimale basato sull'hash (#/giudice), così il tasto "indietro"
@@ -27,6 +28,7 @@ export default function App() {
 
   if (rotta === 'hub') return <Hub onApri={vai} />;
   if (rotta === 'giudice') return <Giudice onEsci={() => vai('hub')} />;
+  if (rotta === 'piazzola') return <Piazzola onEsci={() => vai('hub')} />;
   if (rotta === 'sagome') return <GalleriaSagome onEsci={() => vai('hub')} />;
   if (GIOCHI.some((g) => g.id === rotta)) return <InArrivo id={rotta} onEsci={() => vai('hub')} />;
   return <Hub onApri={vai} />;

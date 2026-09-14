@@ -26,6 +26,15 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // le foto delle piazzole non vanno pre-scaricate tutte: si mettono in cache man mano che si vedono
+        globIgnores: ['piazzole/**'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/piazzole/'),
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'piazzole', expiration: { maxEntries: 300, maxAgeSeconds: 60 * 24 * 3600 } },
+          },
+        ],
       },
     }),
   ],

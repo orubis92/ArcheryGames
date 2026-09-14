@@ -32,8 +32,8 @@ export const GIOCHI = [
     nome: 'Piazzola 3D',
     sottotitolo: 'Stima delle distanze',
     descrizione:
-      'Foto reali di sagome nel bosco: quanto è lontana? Punteggio in base allo scarto.',
-    stato: 'in-arrivo',
+      'Una sagoma nel bosco vista dal picchetto: quanto è lontana? Punteggio in base allo scarto, archivio del vostro campo.',
+    stato: 'pronto',
     icona: 'piazzola',
   },
 ];

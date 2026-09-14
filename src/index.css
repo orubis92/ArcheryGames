@@ -319,3 +319,30 @@ cite { font-style: normal; color: var(--testo-2); font-size: 0.85rem; }
 .galleria { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
 .galleria .bersaglio { margin: 0; }
 .galleria figcaption .legenda { display: none; }
+
+/* ---- piazzola 3D */
+.avviso { background: var(--ko-fondo); border-left: 4px solid var(--ko); padding: 0.6rem 0.8rem; border-radius: 8px; }
+.avviso code { font-size: 0.9em; }
+.tendenza { background: var(--carta); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.8rem 1rem; margin: 0.5rem 0 1rem; }
+.tendenza h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--testo-2); margin-bottom: 0.3rem; }
+.tendenza p { margin: 0; }
+.piazzola .foto { margin: 0 0 0.5rem; }
+.piazzola .foto img { display: block; width: 100%; height: auto; border-radius: 10px; background: #dfe5dc; }
+.piazzola .foto figcaption { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-size: 0.8rem; color: var(--testo-2); margin-top: 0.4rem; }
+.piazzola .foto .nota { font-style: italic; }
+.stima h2 { margin-top: 0.5rem; }
+.stima .valore { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.5rem 0; }
+.stima output { min-width: 5.5rem; text-align: center; font-size: 2.4rem; font-weight: 800; color: var(--verde); font-variant-numeric: tabular-nums; line-height: 1; }
+.stima output small { font-size: 1rem; font-weight: 600; color: var(--testo-2); }
+.btn-passo { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--verde); background: var(--carta); color: var(--verde); font-weight: 700; }
+.btn-passo.piccolo { width: 40px; height: 40px; font-size: 0.85rem; }
+.stima input[type=range] { width: 100%; accent-color: var(--ambra); margin: 0.5rem 0 0; }
+.stima .scala { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--testo-2); margin-bottom: 1rem; }
+.confronto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
+.confronto span { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--testo-2); }
+.confronto b { font-size: 1.15rem; color: var(--testo); }
+.suggerimento { font-size: 0.9rem; color: var(--testo-2); margin-bottom: 1rem; }
+.tabella-stime { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: var(--carta); border-radius: 10px; overflow: hidden; }
+.tabella-stime th, .tabella-stime td { padding: 0.5rem 0.6rem; text-align: right; border-bottom: 1px solid var(--bordo); }
+.tabella-stime th:first-child, .tabella-stime td:first-child { text-align: left; }
+.tabella-stime th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--testo-2); }
