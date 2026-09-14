@@ -42,11 +42,13 @@ export default function Hub({ onApri }) {
     <section className="schermo hub">
       <Intestazione />
       <header className="hub-testata">
-        <button className="btn-profilo" onClick={() => onApri('profilo')} aria-label="Profilo e progressi">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-          Profilo
-        </button>
-        <h1>Archery Games</h1>
+        <div className="hub-riga">
+          <h1>Archery Games</h1>
+          <button className="btn-profilo" onClick={() => onApri('profilo')} aria-label="Profilo e progressi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            Profilo
+          </button>
+        </div>
         <p>Quattro giochi per arcieri: regolamento, tecnica, messa a punto e sopralluogo delle piazzole.</p>
       </header>
       <div className="griglia-giochi">

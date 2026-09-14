@@ -490,8 +490,9 @@ body.scossa { animation: scossa 0.45s ease-in-out; }
 /* =========================================================
    Profilo, esame, condivisione, attestato
    ========================================================= */
+.hub-riga { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .btn-profilo {
-  float: right; display: inline-flex; align-items: center; gap: 0.4rem;
+  position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 0.4rem;
   background: var(--carta); border: 1px solid var(--bordo); border-radius: 999px;
   padding: 0.4rem 0.9rem 0.4rem 0.7rem; font-weight: 600; color: var(--verde); box-shadow: var(--ombra);
 }

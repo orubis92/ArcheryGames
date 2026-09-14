@@ -7,6 +7,24 @@
     <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>Archery Games</title>
+    <script>
+      // Dopo una pubblicazione, un index.html in cache può puntare a un bundle
+      // non più presente (404): in quel caso si ricarica una volta sola.
+      window.addEventListener(
+        'error',
+        function (e) {
+          var t = e.target;
+          if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK') && !sessionStorage.getItem('ag-ricaricato')) {
+            sessionStorage.setItem('ag-ricaricato', '1');
+            location.reload();
+          }
+        },
+        true
+      );
+      window.addEventListener('load', function () {
+        setTimeout(function () { sessionStorage.removeItem('ag-ricaricato'); }, 5000);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
