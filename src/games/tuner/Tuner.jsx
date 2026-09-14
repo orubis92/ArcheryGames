@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PARAMETRI, LIVELLI, LIMITE, TEST, statoCasuale, messoAPunto, assi } from './modello.js';
 import { DiagrammaCarta, DiagrammaNuda, DiagrammaRosata, puntiRosata } from './Diagrammi.jsx';
 import { leggi, scrivi } from '../../lib/storage.js';
+import EffettoEsito from '../../components/Esito.jsx';
 
 const CHIAVE = 'tuner.statistiche.v1';
 
@@ -151,6 +152,7 @@ function Esito({ partita, onRipeti, onMenu }) {
   const fuori = Object.entries(partita.stato).filter(([, v]) => v !== 0);
   return (
     <div className="riepilogo">
+      <EffettoEsito tipo={vinta ? 'ok' : 'ko'} chiave={partita.mosse} />
       <div className="punteggio-finale">
         <span className="grande">{vinta ? '✓' : '✗'}</span>
         <p>

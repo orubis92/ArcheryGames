@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CAUSE, generaRosata, valoreFreccia } from './letture.js';
 import { leggi, scrivi } from '../../lib/storage.js';
+import Esito from '../../components/Esito.jsx';
 
 const PER_SESSIONE = 10;
 const CHIAVE = 'lettura.statistiche.v1';
@@ -171,6 +172,7 @@ function Rosata({ rosata, numero, totale, risposta, onRispondi, onAvanti, onEsci
           })}
         </ul>
       </article>
+      {risposto && <Esito tipo={risposta.corretta ? 'ok' : 'ko'} chiave={rosata.seed} />}
       {risposto && (
         <aside className={`spiegazione ${risposta.corretta ? 'ok' : 'ko'}`}>
           <strong>{risposta.corretta ? 'Lettura corretta.' : `Lettura sbagliata: era «${c.nome}».`}</strong>

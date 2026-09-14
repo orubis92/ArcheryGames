@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LIVELLI, SCENARI, scenariPerLivello } from './scenari.js';
 import Bersaglio from './Bersaglio.jsx';
+import Esito from '../../components/Esito.jsx';
 import {
   caricaStatistiche,
   registraRisposta,
@@ -185,6 +186,7 @@ function Domanda({ scenario, numero, totale, risposta, onRispondi, onAvanti, onE
         </ul>
       </article>
 
+      {risposto && <Esito tipo={risposta.corretta ? 'ok' : 'ko'} chiave={scenario.id} />}
       {risposto && (
         <aside className={`spiegazione ${risposta.corretta ? 'ok' : 'ko'}`}>
           <strong>{risposta.corretta ? 'Decisione corretta.' : 'Decisione sbagliata.'}</strong>

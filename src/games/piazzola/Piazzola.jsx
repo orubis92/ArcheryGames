@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Scena from './Scena.jsx';
 import { LIVELLI, IRREGOLARITA, NOMI_SPECIE, generaCaso, spiegaDistanza, valuta } from './regole.js';
 import { leggi, scrivi } from '../../lib/storage.js';
+import Esito from '../../components/Esito.jsx';
 
 const PER_SESSIONE = 8;
 const CHIAVE = 'piazzola.controllo.v1';
@@ -169,6 +170,8 @@ function Controllo({ caso, numero, totale, risposta, onRispondi, onAvanti, onEsc
             </div>
           </div>
         ) : (
+          <>
+          <Esito tipo={risposta.punti >= 10 ? 'ok' : 'ko'} chiave={caso.seed} />
           <aside className={`spiegazione ${risposta.punti >= 10 ? 'ok' : 'ko'}`}>
             <strong>
               {risposta.esito === 'esatto' && `Valutazione esatta: ${risposta.punti} punti.`}
@@ -195,6 +198,7 @@ function Controllo({ caso, numero, totale, risposta, onRispondi, onAvanti, onEsc
               {numero === totale ? 'Vedi il riepilogo' : 'Prossima piazzola'}
             </button>
           </aside>
+          </>
         )}
       </article>
     </section>
