@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { LIVELLI, SCENARI, scenariPerLivello } from './scenari.js';
 import Bersaglio from './Bersaglio.jsx';
 import Esito from '../../components/Esito.jsx';
+import Condividi from '../../components/Condividi.jsx';
+import Esame, { ESAME, storicoEsami } from './Esame.jsx';
+import { registraSessioneProfilo } from '../../lib/profilo.js';
 import {
   caricaStatistiche,
   registraRisposta,
@@ -29,6 +32,7 @@ function mescolaOpzioni(sc) {
 export default function Giudice({ onEsci }) {
   const [stats, setStats] = useState(caricaStatistiche);
   const [sessione, setSessione] = useState(null); // { livello, scenari, indice, risposte }
+  const [esame, setEsame] = useState(false);
 
   const avvia = (livello) => {
     const base = livello === 'misto' ? SCENARI : scenariPerLivello(livello);
@@ -36,11 +40,13 @@ export default function Giudice({ onEsci }) {
     setSessione({ livello, scenari: scelti, indice: 0, risposte: [] });
   };
 
+  if (esame) return <Esame onEsci={() => setEsame(false)} />;
   if (!sessione) {
     return (
       <MenuGiudice
         stats={stats}
         onAvvia={avvia}
+        onEsame={() => setEsame(true)}
         onEsci={onEsci}
         onAzzera={() => {
           azzeraStatistiche();
@@ -76,6 +82,13 @@ export default function Giudice({ onEsci }) {
     if (prossimo >= scenari.length) {
       const punteggio = risposte.filter((r) => r.corretta).length;
       registraSessione(sessione.livello, punteggio, scenari.length);
+      registraSessioneProfilo({
+        gioco: 'giudice',
+        punti: punteggio,
+        totale: scenari.length,
+        etichetta: sessione.livello === 'misto' ? 'misto' : LIVELLI[sessione.livello].nome,
+        errori: scenari.filter((sc, i) => !risposte[i]?.corretta).map((sc) => sc.fonte),
+      });
     }
     setSessione({ ...sessione, indice: prossimo });
   };
@@ -93,7 +106,9 @@ export default function Giudice({ onEsci }) {
   );
 }
 
-function MenuGiudice({ stats, onAvvia, onEsci, onAzzera }) {
+function MenuGiudice({ stats, onAvvia, onEsame, onEsci, onAzzera }) {
+  const esami = storicoEsami();
+  const superati = esami.filter((e) => e.superato).length;
   const totali = useMemo(
     () => Object.fromEntries(Object.keys(LIVELLI).map((l) => [l, scenariPerLivello(Number(l)).length])),
     [],
@@ -137,6 +152,14 @@ function MenuGiudice({ stats, onAvvia, onEsci, onAzzera }) {
           </span>
         </button>
       </div>
+      <button className="card-livello esame" onClick={onEsame}>
+        <span className="numero">✎</span>
+        <span className="testo">
+          <strong>Esame giudice</strong>
+          <small>{ESAME.domande} situazioni miste in {ESAME.minuti} minuti, senza aiuti; soglia {Math.round(ESAME.soglia * 100)}%, attestato stampabile.</small>
+          {esami.length > 0 && <small className="meta">{superati} superati su {esami.length}</small>}
+        </span>
+      </button>
       <p className="nota-fonti">
         Fonti: Regolamento Sportivo Tiro con l'arco 3D CSAIn rev. 6.6 (2026) e Regolamento Gare Outdoor 2026.
         In caso di dubbio fa fede il testo ufficiale.
@@ -233,6 +256,12 @@ function Riepilogo({ sessione, onRipeti, onMenu }) {
           ))}
         </div>
       )}
+      <Condividi
+        titolo="Il giudice"
+        punteggio={`${giuste}/${scenari.length}`}
+        sottotitolo={sessione.livello === 'misto' ? 'allenamento misto' : LIVELLI[sessione.livello].nome}
+        dettaglio="Situazioni di gara sul Regolamento CSAIn 3D"
+      />
       <div className="azioni">
         <button className="btn-primario" onClick={onRipeti}>Nuova sessione</button>
         <button className="btn-secondario" onClick={onMenu}>Torna ai livelli</button>

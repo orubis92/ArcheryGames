@@ -2,6 +2,7 @@
 // Corretta: freccia che entra nel bersaglio + raggiera di particelle.
 // Sbagliata: lampo rosso ai bordi e scossa; la scossa è applicata via classe sul body.
 import { useEffect, useState } from 'react';
+import { suonoCorretto, suonoErrore } from '../lib/suoni.js';
 
 const PARTICELLE = Array.from({ length: 14 }, (_, i) => ({
   angolo: (360 / 14) * i + (i % 2 ? 12 : -8),
@@ -14,6 +15,8 @@ export default function Esito({ tipo, chiave }) {
   useEffect(() => {
     if (!tipo) return undefined;
     setAttivo(true);
+    if (tipo === 'ok') suonoCorretto();
+    else suonoErrore();
     if (tipo === 'ko') {
       document.body.classList.add('scossa');
       setTimeout(() => document.body.classList.remove('scossa'), 450);

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "campo-01",
+    "foto": "piazzole/campo-01.jpg",
+    "campo": "Campo di allenamento, piazzola 7",
+    "gara": "44 Fusion",
+    "gruppo": 2,
+    "sagoma": "Cinghiale",
+    "picchetto": "giallo",
+    "distanza": 28.5,
+    "difetti": [],
+    "note": ["Sagoma parzialmente coperta da un cespuglio, ma lo spot è completamente visibile."]
+  },
+  {
+    "id": "campo-02",
+    "foto": "piazzole/campo-02.jpg",
+    "campo": "Campo di allenamento, piazzola 12",
+    "gara": "60 Target",
+    "gruppo": 4,
+    "sagoma": "Lepre",
+    "picchetto": "bianco",
+    "distanza": 23,
+    "motivoTolleranza": true,
+    "difetti": ["distanza", "traiettoria"],
+    "note": ["Il ramo basso a metà percorso limita la parabola per gli archi tradizionali."]
+  }
+]

@@ -70,6 +70,7 @@ export const IRREGOLARITA = {
 };
 
 export const LIVELLI = {
+  foto: { nome: 'Foto del campo', descrizione: 'Piazzole vere fotografate al campo, giudicate con tutte le regole.', chiavi: Object.keys(IRREGOLARITA) },
   1: { nome: 'Distanze', descrizione: 'Solo la tabella delle distanze: gara, gruppo, picchetto, tolleranza.', chiavi: ['distanza', 'rosso'] },
   2: { nome: 'Visibilità e ostacoli', descrizione: 'Spot coperto, rami sulla traiettoria, ostacoli vicino al picchetto.', chiavi: ['distanza', 'rosso', 'spot', 'traiettoria', 'picchetto'] },
   3: { nome: 'Sicurezza', descrizione: 'Sentieri, dossi, recinzioni, crinali. Anche più difetti insieme.', chiavi: Object.keys(IRREGOLARITA) },
@@ -215,4 +216,34 @@ export function valuta(caso, scelte) {
   // entrambi irregolari ma motivi diversi/incompleti
   const azzeccate = [...reali].filter((k) => date.has(k)).length;
   return { punti: azzeccate > 0 ? 5 : 2, esito: 'parziale' };
+}
+
+// Converte una voce dell'archivio fotografico (public/piazzole/foto.json) in un caso giocabile.
+// Voce: { id, foto, gara, gruppo, picchetto, distanza, distanzaGiallo?, motivoTolleranza?, altana?, crinaleMetri?,
+//         sagoma?, campo?, difetti: [chiavi di IRREGOLARITA], note: [testi] }
+export function casoDaFoto(v) {
+  const gara = GARE[v.gara] ? v.gara : '44 Fusion';
+  const gruppo = [1, 2, 3, 4].includes(v.gruppo) ? v.gruppo : 1;
+  const [maxTrad, maxTec] = GARE[gara].max[gruppo];
+  const picchetto = ['giallo', 'bianco', 'rosso'].includes(v.picchetto) ? v.picchetto : 'giallo';
+  let limite = picchetto === 'giallo' ? maxTrad : picchetto === 'bianco' ? maxTec : Math.min(v.distanzaGiallo ?? maxTrad, maxTrad / 2);
+  const scena = {
+    foto: v.foto,
+    specie: null,
+    nomeSagoma: v.sagoma || '',
+    campo: v.campo || '',
+    gara,
+    gruppo,
+    picchetto,
+    distanza: Number(v.distanza) || 0,
+    distanzaGiallo: v.distanzaGiallo,
+    motivoTolleranza: Boolean(v.motivoTolleranza),
+    altana: Boolean(v.altana),
+    crinaleMetri: v.crinaleMetri,
+    limite,
+    maxTrad,
+    maxTec,
+  };
+  const difetti = (v.difetti || []).filter((k) => IRREGOLARITA[k]);
+  return { livello: 'foto', scena, difetti, note: v.note || [], seed: v.id || v.foto };
 }

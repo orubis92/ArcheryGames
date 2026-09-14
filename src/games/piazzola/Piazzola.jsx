@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import Scena from './Scena.jsx';
-import { LIVELLI, IRREGOLARITA, NOMI_SPECIE, generaCaso, spiegaDistanza, valuta } from './regole.js';
+import { LIVELLI, IRREGOLARITA, NOMI_SPECIE, generaCaso, spiegaDistanza, valuta, casoDaFoto } from './regole.js';
 import { leggi, scrivi } from '../../lib/storage.js';
 import Esito from '../../components/Esito.jsx';
+import Condividi from '../../components/Condividi.jsx';
+import { registraSessioneProfilo } from '../../lib/profilo.js';
 
 const PER_SESSIONE = 8;
 const CHIAVE = 'piazzola.controllo.v1';
@@ -10,9 +12,22 @@ const CHIAVE = 'piazzola.controllo.v1';
 export default function Piazzola({ onEsci }) {
   const [stats, setStats] = useState(() => leggi(CHIAVE, {}));
   const [sessione, setSessione] = useState(null);
+  const [foto, setFoto] = useState(null); // archivio fotografico: null = non caricato
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}piazzole/foto.json`, { cache: 'no-cache' })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((v) => setFoto(Array.isArray(v) ? v : []))
+      .catch(() => setFoto([]));
+  }, []);
 
   const avvia = (livello) => {
-    const casi = Array.from({ length: PER_SESSIONE }, () => ({ ...generaCaso(livello), seed: Math.floor(Math.random() * 1e6) }));
+    let casi;
+    if (livello === 'foto') {
+      casi = foto.map(casoDaFoto).sort(() => Math.random() - 0.5).slice(0, PER_SESSIONE);
+    } else {
+      casi = Array.from({ length: PER_SESSIONE }, () => ({ ...generaCaso(livello), seed: Math.floor(Math.random() * 1e6) }));
+    }
     setSessione({ livello, casi, indice: 0, risposte: [] });
   };
 
@@ -20,6 +35,7 @@ export default function Piazzola({ onEsci }) {
     return (
       <Menu
         stats={stats}
+        foto={foto}
         onAvvia={avvia}
         onEsci={onEsci}
         onAzzera={() => {
@@ -60,6 +76,13 @@ export default function Piazzola({ onEsci }) {
       if (punti > l.migliore) l.migliore = punti;
       s[livello] = l;
       scrivi(CHIAVE, s);
+      registraSessioneProfilo({
+        gioco: 'piazzola',
+        punti,
+        totale: casi.length * 10,
+        etichetta: LIVELLI[livello].nome,
+        errori: casi.flatMap((c, i) => (risposte[i].punti < 10 ? c.difetti.filter((k) => !risposte[i].scelte.includes(k)) : [])),
+      });
     }
     setSessione({ ...sessione, indice: prossimo });
   };
@@ -77,7 +100,8 @@ export default function Piazzola({ onEsci }) {
   );
 }
 
-function Menu({ stats, onAvvia, onEsci, onAzzera }) {
+function Menu({ stats, foto, onAvvia, onEsci, onAzzera }) {
+  const nFoto = foto ? foto.length : 0;
   return (
     <section className="schermo">
       <header className="testata">
@@ -91,18 +115,26 @@ function Menu({ stats, onAvvia, onEsci, onAzzera }) {
       <div className="lista-livelli">
         {Object.entries(LIVELLI).map(([n, l]) => {
           const s = stats[n];
+          const isFoto = n === 'foto';
+          if (isFoto && nFoto === 0) return null;
           return (
-            <button key={n} className="card-livello" onClick={() => onAvvia(Number(n))}>
-              <span className="numero">{n}</span>
+            <button key={n} className={`card-livello ${isFoto ? 'misto' : ''}`} onClick={() => onAvvia(isFoto ? 'foto' : Number(n))}>
+              <span className="numero">{isFoto ? '📷' : n}</span>
               <span className="testo">
                 <strong>{l.nome}</strong>
-                <small>{l.descrizione}</small>
+                <small>{l.descrizione}{isFoto ? ` ${nFoto} in archivio.` : ''}</small>
                 {s && <small className="meta">miglior sessione {s.migliore}/{s.totale} · {s.sessioni} sessioni</small>}
               </span>
             </button>
           );
         })}
       </div>
+      {nFoto === 0 && (
+        <p className="nota-fonti">
+          Livello "Foto del campo": aggiungi le foto delle vostre piazzole in <code>public/piazzole/</code> e descrivile in{' '}
+          <code>foto.json</code> (vedi README); comparirà qui.
+        </p>
+      )}
       <p className="nota-fonti">
         Fonti: Regolamento Sportivo 3D rev. 6.6 (Cap. III e V), Regolamento Gare Outdoor 2026 (tabelle delle distanze),
         Regolamento attuativo sicurezza campi gara (Cap. II Par. III–IV). Punteggio: 10 se la valutazione è esatta, 5 se
@@ -137,11 +169,20 @@ function Controllo({ caso, numero, totale, risposta, onRispondi, onAvanti, onEsc
       <div className="barra"><i style={{ width: `${((numero - 1) / totale) * 100}%` }} /></div>
 
       <article className="scenario piazzola">
-        <Scena scena={scena} seed={caso.seed} />
+        {scena.foto ? (
+          <figure className="foto">
+            <a href={`${import.meta.env.BASE_URL}${scena.foto.replace(/^\//, '')}`} target="_blank" rel="noreferrer" title="Apri a schermo intero">
+              <img src={`${import.meta.env.BASE_URL}${scena.foto.replace(/^\//, '')}`} alt="Piazzola fotografata dal picchetto" />
+            </a>
+            {scena.campo && <figcaption>{scena.campo}</figcaption>}
+          </figure>
+        ) : (
+          <Scena scena={scena} seed={caso.seed} />
+        )}
 
         <dl className="tabella-piazzola">
           <div><dt>Gara</dt><dd>{scena.gara}</dd></div>
-          <div><dt>Gruppo</dt><dd>{scena.gruppo} · {NOMI_SPECIE[scena.specie]}</dd></div>
+          <div><dt>Gruppo</dt><dd>{scena.gruppo}{scena.specie ? ` · ${NOMI_SPECIE[scena.specie]}` : scena.nomeSagoma ? ` · ${scena.nomeSagoma}` : ''}</dd></div>
           <div><dt>Picchetto</dt><dd className={`pic-${scena.picchetto}`}>{scena.picchetto}</dd></div>
           <div className="dist"><dt>Distanza misurata</dt><dd>{scena.distanza} m</dd></div>
           {scena.picchetto === 'rosso' && <div><dt>Picchetto giallo</dt><dd>{scena.distanzaGiallo} m</dd></div>}
@@ -242,6 +283,7 @@ function Riepilogo({ sessione, onRipeti, onMenu }) {
           ))}
         </tbody>
       </table>
+      <Condividi titolo="Controllo piazzola" punteggio={`${punti}/${massimo}`} sottotitolo={LIVELLI[sessione.livello].nome} dettaglio="Sopralluogo del giudice di gara" />
       <div className="azioni">
         <button className="btn-primario" onClick={onRipeti}>Nuova sessione</button>
         <button className="btn-secondario" onClick={onMenu}>Torna ai livelli</button>

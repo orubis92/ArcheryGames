@@ -920,6 +920,183 @@ export const SCENARI = [
       "L'arciere può abbandonare temporaneamente la gara previa comunicazione al Presidente dell'associazione o al Giudice di Gara; la squadra prosegue e l'arciere potrà ritornare, ma non potrà recuperare le piazzole già ultimate dalla squadra.",
     fonte: 'RS Cap. III Par. V comma 13',
   },
+  // ---------------------------------------------------------------- INDOOR IN LINEA (aggiunte)
+  {
+    id: 'L1-indoor-round-somma',
+    livello: 1,
+    gara: '25 3D Round&Trophy',
+    situazione:
+      'Fase Round in linea: due frecce per corsia. Prima freccia nel Perfect, seconda nello Spot.',
+    domanda: 'Quanti punti registra la corsia?',
+    opzioni: ['14 + 8 = 22 punti', '14 + 10 = 24 punti', '12 + 8 = 20 punti', 'Solo la prima: 14 punti'],
+    corretta: 0,
+    spiegazione:
+      'Nel Round si sommano le due frecce con valori diversi: prima freccia Perfect 14, Super Spot 12, Spot 10, Sagoma 6; seconda freccia Perfect 12, Super Spot 10, Spot 8, Sagoma 4. Quindi 14 + 8 = 22.',
+    fonte: 'RGO Art. 11 comma 5',
+  },
+  {
+    id: 'L1-indoor-corsia-g4',
+    livello: 1,
+    gara: '25 3D Round&Trophy',
+    situazione:
+      "Corsia di gruppo 4 con due sagome affiancate e tiro in coppia. L'arciere B tira sulla sagoma di sinistra e colpisce lo Spot.",
+    domanda: 'Quanti punti vale la freccia?',
+    opzioni: ['Vale lo Spot: la sagoma è nella sua corsia', '0 punti: B deve tirare sulla sagoma di destra', 'Vale Sagoma', 'Decide il marcatore'],
+    corretta: 1,
+    spiegazione:
+      "Nelle corsie di gruppo 4 con tiro in coppia gli arcieri A, C ed E tirano esclusivamente sulla sagoma di sinistra e B, D ed F su quella di destra. Una freccia su una sagoma diversa da quella assegnata è nulla.",
+    fonte: 'RS Cap. VI Par. V commi 3 e 4',
+  },
+  {
+    id: 'L2-indoor-piedi',
+    livello: 2,
+    gara: '40 3D Round&Trophy',
+    situazione:
+      "Gara in linea. Un arciere si posiziona con entrambi i piedi dietro la linea di tiro, come farebbe a un picchetto.",
+    domanda: 'La posizione è corretta?',
+    opzioni: ['Sì: dietro la linea è sempre regolare', 'No: nelle gare in linea i piedi vanno a cavallo della linea di tiro', 'Sì, se non tocca la linea', 'Solo per le categorie tecnologiche'],
+    corretta: 1,
+    spiegazione:
+      "Nelle gare in linea l'arciere deve posizionarsi con i piedi a cavallo della linea di tiro: è la regola specifica di questa tipologia, diversa dal picchetto outdoor dove i piedi stanno dietro.",
+    fonte: 'RS Cap. VI Par. IV comma 7',
+  },
+  {
+    id: 'L2-indoor-binocolo',
+    livello: 2,
+    gara: '25 3D Round&Trophy',
+    situazione:
+      'Gara in linea, fase Round. Dopo la prima freccia un arciere guarda la sagoma con il binocolo prima di tirare la seconda.',
+    domanda: 'È ammesso?',
+    opzioni: ['Sì, come outdoor prima della sequenza', 'No: nelle gare in linea il binocolo tra un tiro e l\'altro non è ammesso', 'Sì, entro i 90 secondi', 'Solo con autorizzazione del Direttore di tiro'],
+    corretta: 1,
+    spiegazione:
+      "Nelle gare in linea non è ammesso l'uso del binocolo tra un tiro e l'altro, ed è obbligatorio tornare dietro la linea d'attesa subito dopo la sequenza.",
+    fonte: 'RS Cap. VI Par. IV comma 8',
+  },
+  {
+    id: 'L2-indoor-ingresso',
+    livello: 2,
+    gara: '40 3D Round&Trophy',
+    situazione:
+      "Gestione con monitor. Suona il segnale acustico a doppio suono e parte un conto alla rovescia rosso di 10 secondi. Un arciere, già sulla linea, incocca e scocca subito.",
+    domanda: 'Qual è la conseguenza?',
+    opzioni: ['Nessuna: era già sulla linea', 'Annullamento del punteggio della volée e richiamo ufficiale', 'Solo richiamo', 'Squalifica immediata'],
+    corretta: 1,
+    spiegazione:
+      "Il doppio segnale e i 10 secondi in rosso autorizzano solo l'ingresso sulla linea; il tiro inizia con il segnale singolo e il verde. Scoccare prima del verde comporta l'annullamento dell'intera volée; prima infrazione richiamo ufficiale, seconda squalifica.",
+    fonte: 'RS Cap. VI Par. IV commi 3 e 4',
+  },
+  {
+    id: 'L3-indoor-guasto',
+    livello: 3,
+    gara: '25 3D Round&Trophy',
+    situazione:
+      "Gara in linea. A un arciere si rompe la corda. Chiede di fermare la gara per il tempo della riparazione.",
+    domanda: 'Come si procede?',
+    opzioni: [
+      'La gara si sospende fino alla riparazione',
+      'La gara non si interrompe: con il consenso del Giudice l\'arciere lascia la linea e rientra dopo, senza rivendicare i tiri persi',
+      'L\'arciere viene escluso dalla gara',
+      'Gli si concede una volée di recupero a fine sessione',
+    ],
+    corretta: 1,
+    spiegazione:
+      "In caso di guasto tecnico o indisposizione temporanea la gara non subisce interruzione: l'arciere può, con il consenso del Giudice di Gara, abbandonare la linea e tornare, ma non può rivendicare i tiri non eseguiti durante l'interruzione.",
+    fonte: 'RS Cap. VI Par. V comma 5',
+  },
+  {
+    id: 'L3-indoor-segnali',
+    livello: 3,
+    gara: '40 3D Round&Trophy',
+    situazione:
+      'Gestione con monitor. Durante una volée si sentono cinque suoni acustici e sul monitor compare "STOP" in rosso.',
+    domanda: 'Cosa significa?',
+    opzioni: ['Fine della sessione di tiro', 'Emergenza: interruzione immediata dei tiri', 'Cambio di coppia', 'Ultimi 15 secondi'],
+    corretta: 1,
+    spiegazione:
+      'Cinque suoni e la scritta STOP in rosso indicano l\'emergenza e l\'interruzione immediata dei tiri. Il triplo segnale con semaforo rosso e tempo 0 indica invece la fine della sessione, con recupero delle frecce e conteggio.',
+    fonte: 'RS Cap. VI Par. IV comma 4 lett. f) e g)',
+  },
+  {
+    id: 'L3-indoor-distanze',
+    livello: 3,
+    gara: '25 3D Round&Trophy',
+    situazione:
+      'Sopralluogo di un 25 3D Round&Trophy su 20 corsie: una corsia di gruppo 4 ha la sagoma a 22 m, una di gruppo 3 a 11 m.',
+    domanda: 'Cosa non va?',
+    opzioni: ['Nulla: entro i 25 m', 'Entrambe: il gruppo 4 non oltre 20 m e la distanza minima è 12 m', 'Solo la corsia di gruppo 4', 'Solo la corsia di gruppo 3'],
+    corretta: 1,
+    spiegazione:
+      'Nel 25 3D Round&Trophy le corsie di gruppo 1, 2 e 3 hanno distanza massima 25 m, quelle di gruppo 4 massima 20 m; la distanza minima per tutti i gruppi è 12 m.',
+    fonte: 'RGO Art. 11 commi 10 e 12',
+  },
+
+  // ---------------------------------------------------------------- SAGOME MOBILI (aggiunte)
+  {
+    id: 'L2-mobile-velocita',
+    livello: 2,
+    gara: '44 Fusion',
+    situazione:
+      'Sopralluogo: nella piazzola mobile il carrello percorre i 2,5 m della finestra di tiro in circa un secondo.',
+    domanda: 'La piazzola è regolare?',
+    opzioni: ['Sì', 'No: la velocità massima nello specchio di tiro è 2 m/s', 'Sì, se la finestra è segnalata', 'No: la finestra deve essere di almeno 3 m'],
+    corretta: 1,
+    spiegazione:
+      "La velocità massima del bersaglio mobile nello specchio di tiro è di 2 metri al secondo (carrello + sagoma). La finestra di tiro non deve essere inferiore a 2,5 m e l'angolazione rispetto alla linea di tiro non oltre 30°.",
+    fonte: 'RS Cap. V Par. V commi c), o), q), r)',
+  },
+  {
+    id: 'L2-mobile-manovratore',
+    livello: 2,
+    gara: '40 Round',
+    situazione:
+      "Piazzola mobile senza personale dell'organizzazione. La squadra deve decidere chi manovra la sagoma per il primo arciere.",
+    domanda: 'Chi manovra?',
+    opzioni: ['Il responsabile di piazzola', 'A turno i componenti della squadra, iniziando dall\'ultimo arciere che deve tirare', 'Il primo arciere dopo aver tirato', 'Un minorenne della squadra, purché tesserato'],
+    corretta: 1,
+    spiegazione:
+      "Il manovratore è a turno tra i componenti della squadra, partendo dall'ultimo arciere che deve eseguire i tiri; la manovra deve essere fatta da un organizzatore o da un atleta maggiorenne della piazzola.",
+    fonte: 'RS Cap. V Par. V commi a) e g)',
+  },
+  {
+    id: 'L2-mobile-visione',
+    livello: 2,
+    gara: '44 Fusion',
+    situazione:
+      'Prima dei tiri sulla piazzola mobile, la squadra sul primo picchetto chiede di vedere una corsa della sagoma a vuoto.',
+    domanda: 'È consentito?',
+    opzioni: ['No: sarebbe un vantaggio', 'Sì: prima dei tiri la squadra può fare una manovra per visionare il percorso', 'Solo per le Prime Frecce', 'Solo se lo autorizza il Giudice di Gara'],
+    corretta: 1,
+    spiegazione:
+      'Nelle piazzole con sagome mobili, prima dei tiri, la squadra posizionata sul primo picchetto può effettuare una manovra di mobilità del bersaglio per visionarne il percorso.',
+    fonte: 'RS Cap. V Par. V comma j)',
+  },
+  {
+    id: 'L1-mobile-fusion-distanza',
+    livello: 1,
+    gara: '44 Fusion',
+    situazione:
+      'Sopralluogo 44 Fusion: la piazzola mobile di gruppo 3 ha il picchetto a 24 m per tutte le categorie.',
+    domanda: 'La distanza è regolare?',
+    opzioni: ['Sì: gruppo 3 fino a 30 m', 'No: la mobile di gruppo 3 è a massimo 20 m per tutti', 'Sì, per i tecnologici; no per i tradizionali', 'No: le mobili sono sempre a 25 m'],
+    corretta: 1,
+    spiegazione:
+      'Nella 44 Fusion le piazzole mobili hanno distanze proprie, uguali per tutti: gruppo 2 a 25 m, gruppo 3 a 20 m. Non valgono le distanze massime delle piazzole fisse del gruppo.',
+    fonte: 'RGO Art. 1 comma i)',
+  },
+  {
+    id: 'L3-mobile-fuori-zona',
+    livello: 3,
+    gara: '44 Fusion',
+    situazione:
+      "Piazzola mobile. Un arciere, per seguire la sagoma, scocca con l'arco rivolto oltre il segnale che delimita la zona di tiro. È il primo richiamo.",
+    domanda: 'Qual è la conseguenza?',
+    opzioni: ['Nessuna, se la freccia ha colpito la sagoma', 'Annullate le frecce a punto e diffida; al secondo richiamo squalifica', 'Squalifica immediata', 'Ammonizione verbale'],
+    corretta: 1,
+    spiegazione:
+      "Tutte le fasi del tiro devono avvenire esclusivamente all'interno della zona di tiro delimitata. Al primo richiamo sono annullate le frecce a punto e l'arciere è diffidato; al secondo richiamo è squalificato.",
+    fonte: 'RS Cap. V Par. V comma e)',
+  },
 ];
 
 export function scenariPerLivello(livello) {

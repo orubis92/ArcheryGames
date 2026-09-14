@@ -6,6 +6,7 @@ import GalleriaSagome from './games/giudice/GalleriaSagome.jsx';
 import Piazzola from './games/piazzola/Piazzola.jsx';
 import Tuner from './games/tuner/Tuner.jsx';
 import Lettura from './games/lettura/Lettura.jsx';
+import Profilo from './components/Profilo.jsx';
 import { GIOCHI } from './giochi.js';
 
 // Routing minimale basato sull'hash (#/giudice), così il tasto "indietro"
@@ -30,6 +31,7 @@ export default function App() {
 
   if (rotta === 'hub') return <Hub onApri={vai} />;
   if (rotta === 'giudice') return <Giudice onEsci={() => vai('hub')} />;
+  if (rotta === 'profilo') return <Profilo onEsci={() => vai('hub')} />;
   if (rotta === 'lettura') return <Lettura onEsci={() => vai('hub')} />;
   if (rotta === 'tuner') return <Tuner onEsci={() => vai('hub')} />;
   if (rotta === 'piazzola') return <Piazzola onEsci={() => vai('hub')} />;

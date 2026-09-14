@@ -18,3 +18,12 @@ export function scrivi(chiave, valore) {
     /* modalità privata o quota esaurita: si resta in memoria */
   }
 }
+
+export function rimuovi(chiave) {
+  delete memoria[chiave];
+  try {
+    localStorage.removeItem(chiave);
+  } catch {
+    /* ignora */
+  }
+}

@@ -486,3 +486,66 @@ body.scossa { animation: scossa 0.45s ease-in-out; }
   }
   .hero-anello { display: none; }
 }
+
+/* =========================================================
+   Profilo, esame, condivisione, attestato
+   ========================================================= */
+.btn-profilo {
+  float: right; display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--carta); border: 1px solid var(--bordo); border-radius: 999px;
+  padding: 0.4rem 0.9rem 0.4rem 0.7rem; font-weight: 600; color: var(--verde); box-shadow: var(--ombra);
+}
+.btn-profilo svg { width: 20px; height: 20px; }
+.riquadro { background: var(--carta); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.9rem 1rem; margin-bottom: 0.9rem; box-shadow: var(--ombra); }
+.riquadro p:last-child { margin-bottom: 0; }
+.campo { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.7rem; }
+.campo > span { font-size: 0.8rem; color: var(--testo-2); }
+.campo input[type=text] { font: inherit; padding: 0.6rem 0.7rem; border: 1.5px solid var(--bordo); border-radius: 10px; background: var(--sfondo); color: var(--testo); }
+.campo.riga { flex-direction: row; align-items: center; gap: 0.6rem; margin-bottom: 0; }
+.campo.riga input { width: 20px; height: 20px; accent-color: var(--verde); }
+.tessere { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+.tessera { background: var(--verde); color: #f4f1ea; border-radius: var(--raggio); padding: 0.8rem 0.5rem; text-align: center; display: flex; flex-direction: column; }
+@media (prefers-color-scheme: dark) { .tessera { color: #141a16; } }
+.tessera b { font-size: 1.8rem; line-height: 1.1; }
+.tessera small { font-size: 0.75rem; opacity: 0.85; }
+.profilo h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--testo-2); margin: 1rem 0 0.5rem; }
+.riga-stat { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1rem; }
+.riga-stat span { font-size: 0.85rem; color: var(--testo-2); }
+.deboli { margin-top: 0.5rem; }
+.deboli small { color: var(--testo-2); }
+.deboli ul { list-style: none; padding: 0; margin: 0.3rem 0 0; display: grid; gap: 0.2rem; }
+.deboli li { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.88rem; }
+.deboli li b { color: var(--ko); }
+.storico { list-style: none; padding: 0; margin: 0.4rem 0 0; display: grid; gap: 0.25rem; }
+.storico li { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; font-size: 0.9rem; }
+.storico .ok { color: var(--ok); } .storico .ko { color: var(--ko); }
+.ok-testo { color: var(--ok); font-weight: 600; } .ko-testo { color: var(--ko); font-weight: 600; }
+.card-livello.esame .numero { background: var(--ko); }
+.badge.timer { font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+.badge.timer.urgente { background: var(--ko-fondo); color: var(--ko); animation: pulsa 1s ease-in-out infinite; }
+@keyframes pulsa { 50% { opacity: 0.5; } }
+.errori details.giusta summary { color: var(--ok); }
+.errori details.sbagliata summary { color: var(--ko); }
+.condividi { display: grid; gap: 0.5rem; margin: 1rem 0; }
+@media (min-width: 480px) { .condividi { grid-template-columns: 1fr 1fr; } .condividi small { grid-column: 1 / -1; } }
+.condividi small { color: var(--testo-2); text-align: center; }
+
+/* ---- attestato */
+.attestato { margin: 1rem 0; }
+.attestato-bordo {
+  background: #fffdf7; color: #1d2420; border: 3px double #1f3b2d; border-radius: 6px;
+  padding: 2rem 1.5rem; text-align: center; position: relative;
+}
+.attestato-logo { width: 72px; height: 72px; margin-bottom: 0.5rem; }
+.attestato-sopra { text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.75rem; color: #7a5410; }
+.attestato h2 { font-size: 1.6rem; color: #1f3b2d; margin: 0.3rem 0 1rem; }
+.attestato-nome { font-size: 1.5rem; font-weight: 700; border-bottom: 1px solid #1f3b2d; display: inline-block; padding: 0 1rem 0.2rem; margin-bottom: 1rem; }
+.attestato-data { margin-top: 1rem; font-style: italic; }
+.attestato-nota { font-size: 0.72rem; color: #5b655f; margin-top: 1rem; }
+@media print {
+  body { background: #fff; }
+  .no-stampa { display: none !important; }
+  .schermo { max-width: none; padding: 0; }
+  .attestato-bordo { border-width: 4px; padding: 3rem 2.5rem; }
+  .attestato h2 { font-size: 2.2rem; }
+}

@@ -3,6 +3,8 @@ import { PARAMETRI, LIVELLI, LIMITE, TEST, statoCasuale, messoAPunto, assi } fro
 import { DiagrammaCarta, DiagrammaNuda, DiagrammaRosata, puntiRosata } from './Diagrammi.jsx';
 import { leggi, scrivi } from '../../lib/storage.js';
 import EffettoEsito from '../../components/Esito.jsx';
+import Condividi from '../../components/Condividi.jsx';
+import { registraSessioneProfilo } from '../../lib/profilo.js';
 
 const CHIAVE = 'tuner.statistiche.v1';
 
@@ -35,6 +37,7 @@ export default function Tuner({ onEsci }) {
     s[p.livello] = l;
     scrivi(CHIAVE, s);
     setStats(s);
+    registraSessioneProfilo({ gioco: 'tuner', punti: esito === 'vinta' ? 1 : 0, totale: 1, etichetta: `${LIVELLI[p.livello].nome}, ${p.mosse} regolazioni` });
   };
 
   if (regole) return <Regole onChiudi={() => setRegole(false)} />;
@@ -176,6 +179,7 @@ function Esito({ partita, onRipeti, onMenu }) {
           <p>Hai chiuso con una compensazione: è legittimo, ma ricorda che punta, bottone e brace agiscono a metà scatto rispetto allo spine.</p>
         )}
       </div>
+      <Condividi titolo="Il tuner" punteggio={vinta ? '✓' : '✗'} sottotitolo={LIVELLI[partita.livello].nome} dettaglio={vinta ? `Arco a punto in ${partita.mosse} regolazioni e ${partita.frecce} frecce` : 'Arco non a punto'} />
       <div className="azioni">
         <button className="btn-primario" onClick={onRipeti}>Nuova partita</button>
         <button className="btn-secondario" onClick={onMenu}>Torna ai livelli</button>

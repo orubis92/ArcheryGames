@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { CAUSE, generaRosata, valoreFreccia } from './letture.js';
 import { leggi, scrivi } from '../../lib/storage.js';
 import Esito from '../../components/Esito.jsx';
+import Condividi from '../../components/Condividi.jsx';
+import { registraSessioneProfilo } from '../../lib/profilo.js';
 
 const PER_SESSIONE = 10;
 const CHIAVE = 'lettura.statistiche.v1';
@@ -73,6 +75,7 @@ export default function Lettura({ onEsci }) {
             </details>
           ))}
         </div>
+        <Condividi titolo="Lettura del bersaglio" punteggio={`${giuste}/${rosate.length}`} dettaglio="Diagnosi delle rosate" />
         <div className="azioni">
           <button className="btn-primario" onClick={avvia}>Nuova sessione</button>
           <button className="btn-secondario" onClick={() => { setStats(leggi(CHIAVE, stats)); setSessione(null); }}>Torna al menu</button>
@@ -92,7 +95,14 @@ export default function Lettura({ onEsci }) {
     const nuove = [...risposte, { scelta, corretta }];
     if (nuove.length === rosate.length) {
       s.sessioni += 1;
-      s.migliore = Math.max(s.migliore, nuove.filter((x) => x.corretta).length);
+      const giuste = nuove.filter((x) => x.corretta).length;
+      s.migliore = Math.max(s.migliore, giuste);
+      registraSessioneProfilo({
+        gioco: 'lettura',
+        punti: giuste,
+        totale: rosate.length,
+        errori: rosate.filter((ro, i) => !nuove[i].corretta).map((ro) => ro.causa),
+      });
     }
     scrivi(CHIAVE, s);
     setSessione({ ...sessione, risposte: nuove });
