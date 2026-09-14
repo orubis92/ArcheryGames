@@ -29,10 +29,10 @@ export const GIOCHI = [
   },
   {
     id: 'piazzola',
-    nome: 'Piazzola 3D',
-    sottotitolo: 'Stima delle distanze',
+    nome: 'Controllo piazzola',
+    sottotitolo: 'Il sopralluogo del giudice',
     descrizione:
-      'Una sagoma nel bosco vista dal picchetto: quanto è lontana? Punteggio in base allo scarto, archivio del vostro campo.',
+      'Gara, gruppo, picchetto e distanza misurata: la piazzola è regolare? Distanze, visibilità dello spot, ostacoli e sicurezza.',
     stato: 'pronto',
     icona: 'piazzola',
   },

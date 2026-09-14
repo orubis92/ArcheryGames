@@ -1,93 +1,73 @@
-import { useEffect, useState } from 'react';
-import { valuta, MAX_44_FUSION } from './punteggio.js';
-import { carica, registraStima, registraSessione, azzera, tendenza } from './statistiche.js';
+import { useEffect, useMemo, useState } from 'react';
+import Scena from './Scena.jsx';
+import { LIVELLI, IRREGOLARITA, NOMI_SPECIE, generaCaso, spiegaDistanza, valuta } from './regole.js';
+import { leggi, scrivi } from '../../lib/storage.js';
 
-const PER_SESSIONE = 10;
-const MIN = 5;
-const MAX = 60;
-const PASSO = 0.5;
-
-function mescola(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const PER_SESSIONE = 8;
+const CHIAVE = 'piazzola.controllo.v1';
 
 export default function Piazzola({ onEsci }) {
-  const [archivio, setArchivio] = useState(null); // null = caricamento, [] = vuoto
-  const [errore, setErrore] = useState(null);
-  const [stats, setStats] = useState(carica);
+  const [stats, setStats] = useState(() => leggi(CHIAVE, {}));
   const [sessione, setSessione] = useState(null);
 
-  useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}piazzole/piazzole.json`, { cache: 'no-cache' })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((v) => setArchivio(Array.isArray(v) ? v : []))
-      .catch((e) => {
-        setErrore(e.message);
-        setArchivio([]);
-      });
-  }, []);
-
-  const avvia = (soloReali) => {
-    const base = soloReali ? archivio.filter((p) => !p.esempio) : archivio;
-    const scelte = mescola(base).slice(0, PER_SESSIONE);
-    setSessione({ piazzole: scelte, indice: 0, risposte: [] });
+  const avvia = (livello) => {
+    const casi = Array.from({ length: PER_SESSIONE }, () => ({ ...generaCaso(livello), seed: Math.floor(Math.random() * 1e6) }));
+    setSessione({ livello, casi, indice: 0, risposte: [] });
   };
 
   if (!sessione) {
     return (
       <Menu
-        archivio={archivio}
-        errore={errore}
         stats={stats}
         onAvvia={avvia}
         onEsci={onEsci}
         onAzzera={() => {
-          azzera();
-          setStats(carica());
+          scrivi(CHIAVE, {});
+          setStats({});
         }}
       />
     );
   }
 
-  const { piazzole, indice, risposte } = sessione;
-  if (indice >= piazzole.length) {
+  const { casi, indice, risposte, livello } = sessione;
+  if (indice >= casi.length) {
     return (
       <Riepilogo
         sessione={sessione}
-        onRipeti={() => avvia(false)}
+        onRipeti={() => avvia(livello)}
         onMenu={() => {
-          setStats(carica());
+          setStats(leggi(CHIAVE, {}));
           setSessione(null);
         }}
       />
     );
   }
 
-  const p = piazzole[indice];
-  const rispondi = (stima) => {
-    const v = valuta(stima, p.distanza);
-    setStats(registraStima(p.id, stima, p.distanza));
-    setSessione({ ...sessione, risposte: [...risposte, { id: p.id, stima, ...v }] });
+  const c = casi[indice];
+  const rispondi = (scelte) => {
+    const v = valuta(c, scelte);
+    setSessione({ ...sessione, risposte: [...risposte, { scelte, ...v }] });
   };
   const avanti = () => {
     const prossimo = indice + 1;
-    if (prossimo >= piazzole.length) {
+    if (prossimo >= casi.length) {
       const punti = risposte.reduce((a, r) => a + r.punti, 0);
-      registraSessione(punti, piazzole.length * 10);
+      const s = leggi(CHIAVE, {});
+      const l = s[livello] || { migliore: 0, totale: casi.length * 10, sessioni: 0 };
+      l.sessioni += 1;
+      l.totale = casi.length * 10;
+      if (punti > l.migliore) l.migliore = punti;
+      s[livello] = l;
+      scrivi(CHIAVE, s);
     }
     setSessione({ ...sessione, indice: prossimo });
   };
 
   return (
-    <Stima
-      piazzola={p}
+    <Controllo
+      caso={c}
       numero={indice + 1}
-      totale={piazzole.length}
+      totale={casi.length}
       risposta={risposte[indice]}
       onRispondi={rispondi}
       onAvanti={avanti}
@@ -96,144 +76,121 @@ export default function Piazzola({ onEsci }) {
   );
 }
 
-function Menu({ archivio, errore, stats, onAvvia, onEsci, onAzzera }) {
-  const reali = archivio ? archivio.filter((p) => !p.esempio).length : 0;
-  const esempi = archivio ? archivio.length - reali : 0;
-  const t = tendenza(stats);
+function Menu({ stats, onAvvia, onEsci, onAzzera }) {
   return (
     <section className="schermo">
       <header className="testata">
         <button className="btn-testo" onClick={onEsci}>‹ Giochi</button>
-        <h1>Piazzola 3D</h1>
+        <h1>Controllo piazzola</h1>
       </header>
       <p className="intro">
-        Una sagoma nel bosco, vista dal picchetto: quanto è lontana? Dieci piazzole per sessione, punteggio in base
-        allo scarto. Nel 3D la distanza non è nota e stimarla è metà del gioco.
+        Sei il Giudice di Gara al sopralluogo. Per ogni piazzola vedi la scena dal picchetto e la tabella: gara, gruppo,
+        picchetto, distanza misurata. Decidi se è regolare o segnala cosa non va. Otto piazzole per sessione.
       </p>
-      {archivio === null && <p className="intro">Caricamento dell'archivio…</p>}
-      {errore && <p className="avviso">Archivio non raggiungibile ({errore}).</p>}
-      {archivio && archivio.length === 0 && !errore && (
-        <p className="avviso">L'archivio è vuoto: aggiungi le foto in <code>public/piazzole/</code> (vedi README).</p>
-      )}
-      {archivio && archivio.length > 0 && (
-        <div className="lista-livelli">
-          <button className="card-livello" onClick={() => onAvvia(false)}>
-            <span className="numero">▶</span>
-            <span className="testo">
-              <strong>Gioca</strong>
-              <small>{archivio.length} piazzole in archivio{esempi > 0 ? ` (${esempi} di esempio)` : ''}</small>
-              {stats.migliore && (
-                <small className="meta">miglior sessione {stats.migliore.punti}/{stats.migliore.totale}</small>
-              )}
-            </span>
-          </button>
-          {reali > 0 && esempi > 0 && (
-            <button className="card-livello misto" onClick={() => onAvvia(true)}>
-              <span className="numero">📷</span>
+      <div className="lista-livelli">
+        {Object.entries(LIVELLI).map(([n, l]) => {
+          const s = stats[n];
+          return (
+            <button key={n} className="card-livello" onClick={() => onAvvia(Number(n))}>
+              <span className="numero">{n}</span>
               <span className="testo">
-                <strong>Solo foto reali</strong>
-                <small>{reali} piazzole fotografate al campo</small>
+                <strong>{l.nome}</strong>
+                <small>{l.descrizione}</small>
+                {s && <small className="meta">miglior sessione {s.migliore}/{s.totale} · {s.sessioni} sessioni</small>}
               </span>
             </button>
-          )}
-        </div>
-      )}
-      {t && (
-        <div className="tendenza">
-          <h3>La tua tendenza (ultime {t.n} stime)</h3>
-          <p>
-            Scarto medio {t.assoluta.toFixed(1)} m.{' '}
-            {Math.abs(t.media) < 0.02
-              ? 'Nessuna tendenza sistematica: bene.'
-              : t.media > 0
-                ? `Tendi a sovrastimare (in media +${(t.media * 100).toFixed(0)}%): le sagome sono più vicine di quanto ti sembrano.`
-                : `Tendi a sottostimare (in media ${(t.media * 100).toFixed(0)}%): le sagome sono più lontane di quanto ti sembrano.`}
-          </p>
-        </div>
-      )}
+          );
+        })}
+      </div>
       <p className="nota-fonti">
-        Punteggio: 10 se lo scarto è entro il 3% della distanza reale, 8 entro il 6%, 6 entro il 10%, 3 entro il 15%,
-        altrimenti 0.
+        Fonti: Regolamento Sportivo 3D rev. 6.6 (Cap. III e V), Regolamento Gare Outdoor 2026 (tabelle delle distanze),
+        Regolamento attuativo sicurezza campi gara (Cap. II Par. III–IV). Punteggio: 10 se la valutazione è esatta, 5 se
+        hai visto l'irregolarità ma non tutti i motivi, 2 se irregolare per un motivo sbagliato, 0 se hai promosso una
+        piazzola irregolare o bocciato una regolare.
       </p>
       <button className="btn-testo piccolo" onClick={onAzzera}>Azzera i progressi</button>
     </section>
   );
 }
 
-function Stima({ piazzola, numero, totale, risposta, onRispondi, onAvanti, onEsci }) {
-  // partenza casuale per non ancorare sempre allo stesso numero
-  const iniziale = () => 12 + Math.round(Math.random() * 46) * PASSO;
-  const [valore, setValore] = useState(iniziale);
+function Controllo({ caso, numero, totale, risposta, onRispondi, onAvanti, onEsci }) {
+  const { scena, livello } = caso;
+  const chiavi = LIVELLI[livello].chiavi;
+  const [scelte, setScelte] = useState([]);
   useEffect(() => {
-    setValore(iniziale());
+    setScelte([]);
     window.scrollTo({ top: 0 });
-  }, [piazzola.id]);
+  }, [caso.seed]);
 
   const risposto = Boolean(risposta);
-  const cambia = (v) => setValore(Math.min(MAX, Math.max(MIN, Math.round(v / PASSO) * PASSO)));
-  const src = `${import.meta.env.BASE_URL}${piazzola.foto.replace(/^\//, '')}`;
-  const max = MAX_44_FUSION[piazzola.gruppo];
+  const toggle = (k) => setScelte((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
+  const righeDistanza = useMemo(() => spiegaDistanza(scena), [scena]);
 
   return (
     <section className="schermo domanda">
       <header className="testata">
         <button className="btn-testo" onClick={onEsci}>‹ Esci</button>
         <span className="progresso">{numero} / {totale}</span>
-        {piazzola.gruppo && <span className="badge">Gruppo {piazzola.gruppo}</span>}
+        <span className="badge">{LIVELLI[livello].nome}</span>
       </header>
       <div className="barra"><i style={{ width: `${((numero - 1) / totale) * 100}%` }} /></div>
 
       <article className="scenario piazzola">
-        <figure className="foto">
-          <a href={src} target="_blank" rel="noreferrer" title="Apri l'immagine a schermo intero">
-            <img src={src} alt={`Piazzola: ${piazzola.sagoma || 'sagoma'}`} loading="eager" />
-          </a>
-          <figcaption>
-            {piazzola.sagoma && <span>{piazzola.sagoma}</span>}
-            {piazzola.esempio ? <span className="nota">Scena sintetica di esempio</span> : piazzola.campo && <span>{piazzola.campo}</span>}
-          </figcaption>
-        </figure>
+        <Scena scena={scena} seed={caso.seed} />
+
+        <dl className="tabella-piazzola">
+          <div><dt>Gara</dt><dd>{scena.gara}</dd></div>
+          <div><dt>Gruppo</dt><dd>{scena.gruppo} · {NOMI_SPECIE[scena.specie]}</dd></div>
+          <div><dt>Picchetto</dt><dd className={`pic-${scena.picchetto}`}>{scena.picchetto}</dd></div>
+          <div className="dist"><dt>Distanza misurata</dt><dd>{scena.distanza} m</dd></div>
+          {scena.picchetto === 'rosso' && <div><dt>Picchetto giallo</dt><dd>{scena.distanzaGiallo} m</dd></div>}
+          {scena.motivoTolleranza && <div className="largo"><dt>Nota</dt><dd>Picchetto arretrato per la conformazione del terreno</dd></div>}
+          {scena.altana && <div className="largo"><dt>Postazione</dt><dd>Tiro dall'alto da palchetto; crinale dietro la sagoma {scena.crinaleMetri} m sopra il bersaglio</dd></div>}
+        </dl>
 
         {!risposto ? (
-          <div className="stima">
-            <h2>Quanto è distante la sagoma?</h2>
-            <div className="valore">
-              <button className="btn-passo" onClick={() => cambia(valore - 1)} aria-label="meno un metro">−1</button>
-              <button className="btn-passo piccolo" onClick={() => cambia(valore - PASSO)} aria-label="meno mezzo metro">−½</button>
-              <output>{valore.toFixed(1).replace('.0', '')}<small> m</small></output>
-              <button className="btn-passo piccolo" onClick={() => cambia(valore + PASSO)} aria-label="più mezzo metro">+½</button>
-              <button className="btn-passo" onClick={() => cambia(valore + 1)} aria-label="più un metro">+1</button>
+          <div className="verdetto">
+            <h2>La piazzola è regolare?</h2>
+            <ul className="checklist">
+              {chiavi.map((k) => (
+                <li key={k}>
+                  <label className={scelte.includes(k) ? 'attiva' : ''}>
+                    <input type="checkbox" checked={scelte.includes(k)} onChange={() => toggle(k)} />
+                    <span>{IRREGOLARITA[k].nome}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <div className="azioni">
+              <button className="btn-primario" onClick={() => onRispondi([])} disabled={scelte.length > 0}>Regolare</button>
+              <button className="btn-primario ko" onClick={() => onRispondi(scelte)} disabled={scelte.length === 0}>
+                Irregolare ({scelte.length})
+              </button>
             </div>
-            <input
-              type="range"
-              min={MIN}
-              max={MAX}
-              step={PASSO}
-              value={valore}
-              onChange={(e) => cambia(Number(e.target.value))}
-              aria-label="distanza stimata in metri"
-            />
-            <div className="scala"><span>{MIN} m</span><span>{MAX} m</span></div>
-            <button className="btn-primario" onClick={() => onRispondi(valore)}>Conferma {valore} m</button>
           </div>
         ) : (
-          <aside className={`spiegazione ${risposta.punti >= 6 ? 'ok' : 'ko'}`}>
+          <aside className={`spiegazione ${risposta.punti >= 10 ? 'ok' : 'ko'}`}>
             <strong>
-              {risposta.etichetta}: {risposta.punti} punti
+              {risposta.esito === 'esatto' && `Valutazione esatta: ${risposta.punti} punti.`}
+              {risposta.esito === 'falso-allarme' && 'Falso allarme: la piazzola era regolare. 0 punti.'}
+              {risposta.esito === 'mancato' && 'Piazzola irregolare promossa. 0 punti.'}
+              {risposta.esito === 'parziale' && `Irregolarità vista, ma motivi incompleti o sbagliati: ${risposta.punti} punti.`}
             </strong>
-            <p className="confronto">
-              <span>La tua stima <b>{risposta.stima} m</b></span>
-              <span>Distanza reale <b>{piazzola.distanza} m</b></span>
-              <span>
-                Scarto <b>{risposta.scarto > 0 ? '+' : ''}{risposta.scarto.toFixed(1)} m</b> ({(risposta.rel * 100).toFixed(0)}%)
-              </span>
-            </p>
-            {max && (
-              <p className="suggerimento">
-                Indizio da regolamento: in una 44 Fusion una sagoma di gruppo {piazzola.gruppo} non può stare oltre{' '}
-                {max.tradizionali} m dal picchetto giallo e {max.tecnologici} m dal picchetto bianco.
-              </p>
+            {caso.difetti.length === 0 ? (
+              <p><b>Piazzola regolare.</b></p>
+            ) : (
+              <ul className="motivi">
+                {caso.difetti.map((k) => (
+                  <li key={k}>
+                    <b>{IRREGOLARITA[k].nome}.</b> <cite>{IRREGOLARITA[k].fonte(scena)}</cite>
+                  </li>
+                ))}
+              </ul>
             )}
+            <div className="dettaglio">
+              {righeDistanza.map((t, i) => <p key={i}>{t}</p>)}
+              {caso.note.map((t, i) => <p key={'n' + i}>{t}</p>)}
+            </div>
             <button className="btn-primario" onClick={onAvanti}>
               {numero === totale ? 'Vedi il riepilogo' : 'Prossima piazzola'}
             </button>
@@ -245,16 +202,16 @@ function Stima({ piazzola, numero, totale, risposta, onRispondi, onAvanti, onEsc
 }
 
 function Riepilogo({ sessione, onRipeti, onMenu }) {
-  const { piazzole, risposte } = sessione;
+  const { casi, risposte } = sessione;
   const punti = risposte.reduce((a, r) => a + r.punti, 0);
-  const massimo = piazzole.length * 10;
-  const scartoMedio = risposte.reduce((a, r) => a + Math.abs(r.scarto), 0) / risposte.length;
-  const bias = risposte.reduce((a, r) => a + r.rel * Math.sign(r.scarto), 0) / risposte.length;
+  const massimo = casi.length * 10;
+  const falsi = risposte.filter((r) => r.esito === 'falso-allarme').length;
+  const mancati = risposte.filter((r) => r.esito === 'mancato').length;
   const giudizio =
-    punti >= massimo * 0.9 ? 'Occhio da telemetro.' :
-    punti >= massimo * 0.7 ? 'Buona lettura del terreno.' :
-    punti >= massimo * 0.5 ? 'Discreto: guarda i riferimenti (alberi, altezza della sagoma).' :
-    'Serve allenamento: usa la dimensione della sagoma e i riferimenti del terreno.';
+    punti >= massimo * 0.9 ? 'Sopralluogo da manuale.' :
+    punti >= massimo * 0.7 ? 'Buon occhio; rivedi i motivi mancati.' :
+    punti >= massimo * 0.5 ? 'Discreto: le tabelle delle distanze vanno sapute a memoria.' :
+    'Prima del prossimo sopralluogo rileggi Cap. V del Regolamento Sportivo e il Regolamento attuativo sicurezza.';
   return (
     <section className="schermo riepilogo">
       <header className="testata"><h1>Riepilogo</h1></header>
@@ -262,30 +219,28 @@ function Riepilogo({ sessione, onRipeti, onMenu }) {
         <span className="grande">{punti}<small>/{massimo}</small></span>
         <p>{giudizio}</p>
         <p>
-          Scarto medio {scartoMedio.toFixed(1)} m ·{' '}
-          {Math.abs(bias) < 0.02 ? 'nessuna tendenza' : bias > 0 ? 'tendenza a sovrastimare' : 'tendenza a sottostimare'}
+          {mancati > 0 && `${mancati} piazzol${mancati === 1 ? 'a irregolare promossa' : 'e irregolari promosse'}`}
+          {mancati > 0 && falsi > 0 && ' · '}
+          {falsi > 0 && `${falsi} fals${falsi === 1 ? 'o allarme' : 'i allarmi'}`}
+          {mancati === 0 && falsi === 0 && 'Nessuna promozione indebita e nessun falso allarme.'}
         </p>
       </div>
       <table className="tabella-stime">
-        <thead><tr><th>Sagoma</th><th>Stima</th><th>Reale</th><th>Scarto</th><th>Punti</th></tr></thead>
+        <thead><tr><th>Piazzola</th><th>Distanza</th><th>Esito</th><th>Punti</th></tr></thead>
         <tbody>
-          {piazzole.map((p, i) => {
-            const r = risposte[i];
-            return (
-              <tr key={p.id}>
-                <td>{p.sagoma || p.id}</td>
-                <td>{r.stima} m</td>
-                <td>{p.distanza} m</td>
-                <td>{r.scarto > 0 ? '+' : ''}{r.scarto.toFixed(1)}</td>
-                <td>{r.punti}</td>
-              </tr>
-            );
-          })}
+          {casi.map((c, i) => (
+            <tr key={c.seed}>
+              <td>{c.scena.gara} · G{c.scena.gruppo} · {c.scena.picchetto}</td>
+              <td>{c.scena.distanza} m</td>
+              <td>{c.difetti.length === 0 ? 'regolare' : c.difetti.map((k) => IRREGOLARITA[k].nome.split(' ')[0].toLowerCase()).join(', ')}</td>
+              <td>{risposte[i].punti}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div className="azioni">
         <button className="btn-primario" onClick={onRipeti}>Nuova sessione</button>
-        <button className="btn-secondario" onClick={onMenu}>Torna al menu</button>
+        <button className="btn-secondario" onClick={onMenu}>Torna ai livelli</button>
       </div>
     </section>
   );

@@ -7,7 +7,7 @@ App PWA (React + Vite) con quattro giochi a tema arcieristico, in italiano, pens
 | **Il giudice** | giocabile | Situazioni di gara da decidere secondo il Regolamento CSAIn. Tre livelli (Punteggi, Procedure di tiro, Sanzioni e giudice) più allenamento misto. Spiegazione e riferimento normativo dopo ogni risposta. |
 | Lettura del bersaglio | in arrivo | Diagnosi dell'errore tecnico da una rosata di 12 frecce. |
 | **Il tuner** | giocabile | Rompicapo a stati nascosti: arco olimpico con 1–3 parametri fuori posto (spine, punta, brace, bottone, nocking point). Tre test (carta, freccia nuda, rosata), regolazioni limitate. Modello semplificato in `src/games/tuner/modello.js`. |
-| **Piazzola 3D** | giocabile | Stima della distanza di una sagoma da una foto scattata al picchetto. Punteggio sullo scarto relativo, tendenza personale (sovra/sottostima). Archivio di foto del campo nel repo; finché non ci sono foto vere usa scene sintetiche di esempio. |
+| **Controllo piazzola** | giocabile | Il sopralluogo del giudice: scena dal picchetto con tabella (gara, gruppo, picchetto, distanza misurata). La piazzola è regolare? Tre livelli: distanze; visibilità e ostacoli; sicurezza (sentieri, dossi, crinali), anche con più difetti insieme. Regole e fonti in `src/games/piazzola/regole.js`. |
 
 ## Avvio
 
@@ -49,55 +49,14 @@ src/
     Tuner.jsx             menu, partita, esito, spiegazione dei test
     Diagrammi.jsx         SVG di carta, freccia nuda e rosata
   games/piazzola/
-    Piazzola.jsx          menu, stima, riepilogo
-    punteggio.js          fasce di punteggio e distanze massime per gruppo
-    statistiche.js        stime salvate e tendenza
-public/piazzole/
-  piazzole.json           archivio delle piazzole (foto + distanza)
-  *.jpg / *.svg           le foto (o le scene di esempio)
-scripts/
-  genera-piazzole-esempio.mjs   rigenera le scene sintetiche di esempio
+    regole.js             tabelle delle distanze per gara, catalogo delle irregolarità con fonti, generazione dei casi
+    Scena.jsx             scena SVG della piazzola con i difetti disegnati
+    Piazzola.jsx          menu, controllo, riepilogo
 ```
 
-## Aggiungere foto a "Piazzola 3D"
+## Controllo piazzola: come si generano i casi
 
-1. Al campo, dal picchetto di tiro, scatta la foto ad altezza occhi, in orizzontale, **senza zoom** (1x) e con la sagoma intera nell'inquadratura. Misura la distanza dal picchetto alla sagoma (rotella o telemetro).
-2. Ridimensiona la foto a circa 1600 px di larghezza e salvala in `public/piazzole/` (es. `campo-01.jpg`). Oltre i 300–400 KB per foto l'app diventa lenta su rete mobile.
-3. Aggiungi una voce a `public/piazzole/piazzole.json`:
-
-```json
-{
-  "id": "campo-01",
-  "foto": "piazzole/campo-01.jpg",
-  "distanza": 27.5,
-  "sagoma": "Cinghiale",
-  "gruppo": 1,
-  "campo": "Campo di Cremona, piazzola 7"
-}
-```
-
-`gruppo` e `campo` sono facoltativi (il gruppo serve per l'indizio sulle distanze massime). Le voci con `"esempio": true` sono le scene sintetiche: quando avrai abbastanza foto vere, cancellale dal JSON (e i relativi `.svg`). Le foto non vengono pre-scaricate dalla PWA: entrano in cache man mano che si giocano.
-
-## Aggiungere situazioni a "Il giudice"
-
-Ogni voce di `src/games/giudice/scenari.js` ha questa forma:
-
-```js
-{
-  id: 'L1-esempio',            // stabile e unico: è la chiave delle statistiche
-  livello: 1,                  // 1 Punteggi · 2 Procedure di tiro · 3 Sanzioni e giudice
-  gara: '44 Fusion',
-  situazione: 'Testo della situazione.',
-  bersaglio: { x: 148, y: 118, nota: 'facoltativa' },   // facoltativo: posizione della freccia
-  domanda: 'Quanti punti vale la freccia?',
-  opzioni: ['A', 'B', 'C', 'D'],
-  corretta: 1,                 // indice della risposta giusta (le opzioni vengono mescolate in gioco)
-  spiegazione: 'La regola, spiegata.',
-  fonte: 'RS Cap. III Par. VI comma 9',
-}
-```
-
-Geometria del diagramma (`sagome.js`, viewBox 300×250): quattro sagome originali (cinghiale, cervo, volpe, lepre), ciascuna con il proprio Spot; Super Spot = 0,5 r; Perfect = 0,2 r; sezione dell'asta r 3. Le posizioni simboliche (perfect, superspot, spot, linea-tocca, linea-vicina, sagoma, corna, base) sono calcolate da `posizioneFreccia` in `sagome.js`; la pagina di servizio `#/sagome` mostra tutte le combinazioni.
+Ogni caso pesca gara (44 Fusion, 60 Track, 40 Round, 60 Target, 40 Free-Shot), gruppo, specie e colore del picchetto; la distanza viene tirata sopra o sotto il limite della tabella (RGO). Dal livello 2 possono comparire: picchetto arretrato con tolleranza 5% (RS Cap. V Par. I comma f), spot coperto (irregolare) o sagoma parzialmente nascosta con spot libero (regolare), ramo sulla traiettoria (irregolare) o ramo alto (regolare), ostacolo vicino al picchetto (irregolare) o vicino al bersaglio (regolare, RA Cap. II Par. IV comma 3). Al livello 3: sentiero dietro la sagoma (irregolare se non protetto), terrapieno (regolare), dosso senza/con battifreccia, tiro dall'alto con crinale a meno/più di 5 m. Pesi, testi e fonti sono tutti in `regole.js`.
 
 ## Modello de "Il tuner"
 

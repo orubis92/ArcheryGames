@@ -320,31 +320,36 @@ cite { font-style: normal; color: var(--testo-2); font-size: 0.85rem; }
 .galleria .bersaglio { margin: 0; }
 .galleria figcaption .legenda { display: none; }
 
-/* ---- piazzola 3D */
-.avviso { background: var(--ko-fondo); border-left: 4px solid var(--ko); padding: 0.6rem 0.8rem; border-radius: 8px; }
-.avviso code { font-size: 0.9em; }
-.tendenza { background: var(--carta); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.8rem 1rem; margin: 0.5rem 0 1rem; }
-.tendenza h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--testo-2); margin-bottom: 0.3rem; }
-.tendenza p { margin: 0; }
-.piazzola .foto { margin: 0 0 0.5rem; }
-.piazzola .foto img { display: block; width: 100%; height: auto; border-radius: 10px; background: #dfe5dc; }
-.piazzola .foto figcaption { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-size: 0.8rem; color: var(--testo-2); margin-top: 0.4rem; }
-.piazzola .foto .nota { font-style: italic; }
-.stima h2 { margin-top: 0.5rem; }
-.stima .valore { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.5rem 0; }
-.stima output { min-width: 5.5rem; text-align: center; font-size: 2.4rem; font-weight: 800; color: var(--verde); font-variant-numeric: tabular-nums; line-height: 1; }
-.stima output small { font-size: 1rem; font-weight: 600; color: var(--testo-2); }
-.btn-passo { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--verde); background: var(--carta); color: var(--verde); font-weight: 700; }
-.btn-passo.piccolo { width: 40px; height: 40px; font-size: 0.85rem; }
-.stima input[type=range] { width: 100%; accent-color: var(--ambra); margin: 0.5rem 0 0; }
-.stima .scala { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--testo-2); margin-bottom: 1rem; }
-.confronto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
-.confronto span { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--testo-2); }
-.confronto b { font-size: 1.15rem; color: var(--testo); }
-.suggerimento { font-size: 0.9rem; color: var(--testo-2); margin-bottom: 1rem; }
+/* ---- controllo piazzola */
+.scena { display: block; width: 100%; height: auto; border-radius: 10px; }
+.s-quota { font-size: 18px; fill: #fff; font-weight: 700; paint-order: stroke; stroke: #333; stroke-width: 3px; }
+.s-cartello { fill: #333; font-weight: 700; }
+.tabella-piazzola { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.5rem; margin: 0.75rem 0; }
+.tabella-piazzola div { background: var(--sfondo); border: 1px solid var(--bordo); border-radius: 8px; padding: 0.4rem 0.6rem; }
+.tabella-piazzola div.largo { grid-column: 1 / -1; }
+.tabella-piazzola dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--testo-2); }
+.tabella-piazzola dd { margin: 0; font-weight: 600; text-transform: capitalize; }
+.tabella-piazzola .dist dd { font-size: 1.5rem; color: var(--verde); }
+.tabella-piazzola .pic-giallo::before, .tabella-piazzola .pic-bianco::before, .tabella-piazzola .pic-rosso::before { content: ''; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; border: 1px solid #333; vertical-align: -1px; }
+.tabella-piazzola .pic-giallo::before { background: #e2c02a; }
+.tabella-piazzola .pic-bianco::before { background: #f4f4f0; }
+.tabella-piazzola .pic-rosso::before { background: #c9302c; }
+.verdetto h2 { margin: 0.5rem 0; }
+.checklist { list-style: none; margin: 0 0 0.8rem; padding: 0; display: grid; gap: 0.4rem; }
+.checklist label { display: flex; gap: 0.6rem; align-items: center; padding: 0.55rem 0.7rem; border: 1.5px solid var(--bordo); border-radius: 10px; background: var(--sfondo); cursor: pointer; }
+.checklist label.attiva { border-color: var(--ko); background: var(--ko-fondo); }
+.checklist input { width: 18px; height: 18px; accent-color: var(--ko); }
+.btn-primario.ko { background: var(--ko); border-color: var(--ko); color: #fff; }
+.btn-primario:disabled { opacity: 0.45; cursor: default; }
+.verdetto .azioni { margin-top: 0; }
+.motivi { padding-left: 1.2rem; margin: 0 0 0.5rem; }
+.motivi li { margin-bottom: 0.4rem; }
+.motivi cite { display: block; }
+.dettaglio { font-size: 0.9rem; color: var(--testo-2); margin-bottom: 0.8rem; }
+.dettaglio p { margin-bottom: 0.4rem; }
 .tabella-stime { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: var(--carta); border-radius: 10px; overflow: hidden; }
 .tabella-stime th, .tabella-stime td { padding: 0.5rem 0.6rem; text-align: right; border-bottom: 1px solid var(--bordo); }
-.tabella-stime th:first-child, .tabella-stime td:first-child { text-align: left; }
+.tabella-stime th:first-child, .tabella-stime td:first-child, .tabella-stime td:nth-child(3), .tabella-stime th:nth-child(3) { text-align: left; }
 .tabella-stime th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--testo-2); }
 
 /* ---- il tuner */
