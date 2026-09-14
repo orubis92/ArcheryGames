@@ -6,7 +6,7 @@ App PWA (React + Vite) con quattro giochi a tema arcieristico, in italiano, pens
 |---|---|---|
 | **Il giudice** | giocabile | Situazioni di gara da decidere secondo il Regolamento CSAIn. Tre livelli (Punteggi, Procedure di tiro, Sanzioni e giudice) più allenamento misto. Spiegazione e riferimento normativo dopo ogni risposta. |
 | Lettura del bersaglio | in arrivo | Diagnosi dell'errore tecnico da una rosata di 12 frecce. |
-| Il tuner | in arrivo | Rompicapo di messa a punto (olimpico/barebow). |
+| **Il tuner** | giocabile | Rompicapo a stati nascosti: arco olimpico con 1–3 parametri fuori posto (spine, punta, brace, bottone, nocking point). Tre test (carta, freccia nuda, rosata), regolazioni limitate. Modello semplificato in `src/games/tuner/modello.js`. |
 | **Piazzola 3D** | giocabile | Stima della distanza di una sagoma da una foto scattata al picchetto. Punteggio sullo scarto relativo, tendenza personale (sovra/sottostima). Archivio di foto del campo nel repo; finché non ci sono foto vere usa scene sintetiche di esempio. |
 
 ## Avvio
@@ -44,6 +44,10 @@ src/
     Bersaglio.jsx         diagramma SVG del bersaglio 3D con lente
     sagome.js             silhouette originali delle specie e posizioni simboliche
     statistiche.js        progressi per domanda/livello, selezione pesata
+  games/tuner/
+    modello.js            parametri, pesi, test e livelli (tutte le regole del gioco)
+    Tuner.jsx             menu, partita, esito, spiegazione dei test
+    Diagrammi.jsx         SVG di carta, freccia nuda e rosata
   games/piazzola/
     Piazzola.jsx          menu, stima, riepilogo
     punteggio.js          fasce di punteggio e distanze massime per gruppo
@@ -94,6 +98,10 @@ Ogni voce di `src/games/giudice/scenari.js` ha questa forma:
 ```
 
 Geometria del diagramma (`sagome.js`, viewBox 300×250): quattro sagome originali (cinghiale, cervo, volpe, lepre), ciascuna con il proprio Spot; Super Spot = 0,5 r; Perfect = 0,2 r; sezione dell'asta r 3. Le posizioni simboliche (perfect, superspot, spot, linea-tocca, linea-vicina, sagoma, corna, base) sono calcolate da `posizioneFreccia` in `sagome.js`; la pagina di servizio `#/sagome` mostra tutte le combinazioni.
+
+## Modello de "Il tuner"
+
+Arciere destrimano, arco olimpico. Ogni parametro è a scatti interi rispetto al valore corretto. Asse orizzontale (rigidità dinamica): spine +1 = +1; punta più pesante = −½; bottone più duro = +½; brace più alta = +½. Asse verticale: nocking point. Brace fuori intervallo = arco rumoroso e rosata larga, senza direzione. Carta: strappo a sinistra = rigida, a destra = debole, in alto = nocking alto. Nuda: a sinistra = rigida, bassa = nocking alto. Si vince quando i tre test tornano puliti (le compensazioni sono ammesse). Per cambiare pesi, soglie o testi si modifica solo `modello.js`.
 
 ## Fonti normative
 

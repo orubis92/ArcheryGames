@@ -346,3 +346,33 @@ cite { font-style: normal; color: var(--testo-2); font-size: 0.85rem; }
 .tabella-stime th, .tabella-stime td { padding: 0.5rem 0.6rem; text-align: right; border-bottom: 1px solid var(--bordo); }
 .tabella-stime th:first-child, .tabella-stime td:first-child { text-align: left; }
 .tabella-stime th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--testo-2); }
+
+/* ---- il tuner */
+.tuner h2 { font-size: 1.05rem; margin: 0.5rem 0 0.5rem; }
+.tuner h2 small { font-weight: 500; color: var(--testo-2); }
+.intro.piccolo { font-size: 0.85rem; }
+.griglia-test { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .griglia-test { grid-template-columns: repeat(3, 1fr); } }
+.card-test { background: var(--carta); border: 1px solid var(--bordo); border-radius: var(--raggio); padding: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; box-shadow: var(--ombra); }
+.card-test strong { font-size: 0.95rem; }
+.card-test .lettura { margin: 0; font-size: 0.9rem; }
+.card-test .lettura.vuota { color: var(--testo-2); }
+.diagramma { width: 100%; max-width: 220px; height: auto; align-self: center; background: #eef3ea; border-radius: 8px; }
+@media (prefers-color-scheme: dark) { .diagramma { background: #223026; } }
+.d-testo { font-size: 8px; fill: #5b655f; }
+.btn-secondario.piccolo { padding: 0.5rem 0.8rem; font-size: 0.9rem; }
+.pannello-regolazioni { margin-top: 1rem; }
+.lista-regolazioni { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: 0.5rem; }
+.lista-regolazioni li { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center; }
+.btn-reg { padding: 0.6rem 0.4rem; border-radius: 10px; border: 1.5px solid var(--bordo); background: var(--carta); font-size: 0.85rem; line-height: 1.2; }
+.btn-reg:disabled { opacity: 0.5; cursor: default; }
+.btn-reg:not(:disabled):hover { border-color: var(--verde-chiaro); }
+.nome-reg { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 6.5rem; }
+.nome-reg small { color: var(--testo-2); font-size: 0.72rem; }
+.registro { margin-top: 1rem; font-size: 0.9rem; }
+.registro summary { cursor: pointer; color: var(--testo-2); }
+.registro ol { padding-left: 1.4rem; }
+.registro li.regolazione { color: var(--ambra); }
+.regole h3 { margin: 1rem 0 0.3rem; font-size: 1rem; }
+.regole ul { padding-left: 1.2rem; }
+.regole li { margin-bottom: 0.3rem; }

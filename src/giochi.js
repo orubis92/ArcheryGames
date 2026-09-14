@@ -23,8 +23,8 @@ export const GIOCHI = [
     nome: 'Il tuner',
     sottotitolo: 'Rompicapo di messa a punto',
     descrizione:
-      'Spine, punta, brace height, plunger, nocking point: leggi il test e trova la regolazione giusta.',
-    stato: 'in-arrivo',
+      'Arco olimpico con qualcosa fuori posto: carta, freccia nuda, rosata. Leggi i test e trova la regolazione giusta in poche mosse.',
+    stato: 'pronto',
     icona: 'tuner',
   },
   {
