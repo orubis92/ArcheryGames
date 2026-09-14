@@ -5,7 +5,7 @@ App PWA (React + Vite) con quattro giochi a tema arcieristico, in italiano, pens
 | Gioco | Stato | Descrizione |
 |---|---|---|
 | **Il giudice** | giocabile | Situazioni di gara da decidere secondo il Regolamento CSAIn. Tre livelli (Punteggi, Procedure di tiro, Sanzioni e giudice) più allenamento misto. Spiegazione e riferimento normativo dopo ogni risposta. |
-| Lettura del bersaglio | in arrivo | Diagnosi dell'errore tecnico da una rosata di 12 frecce. |
+| **Lettura del bersaglio** | giocabile | Rosata di 12 frecce generata con rumore casuale secondo sette schemi (gruppo spostato, dispersione verticale/orizzontale, due gruppi, frecce isolate, deriva per fatica, dispersione ampia). Ogni spiegazione dichiara il grado di accordo tra istruttori e cosa verificare sull'arciere. Schemi e testi in `src/games/lettura/letture.js`. |
 | **Il tuner** | giocabile | Rompicapo a stati nascosti: arco olimpico con 1–3 parametri fuori posto (spine, punta, brace, bottone, nocking point). Tre test (carta, freccia nuda, rosata), regolazioni limitate. Modello semplificato in `src/games/tuner/modello.js`. |
 | **Controllo piazzola** | giocabile | Il sopralluogo del giudice: scena dal picchetto con tabella (gara, gruppo, picchetto, distanza misurata). La piazzola è regolare? Tre livelli: distanze; visibilità e ostacoli; sicurezza (sentieri, dossi, crinali), anche con più difetti insieme. Regole e fonti in `src/games/piazzola/regole.js`. |
 
@@ -44,6 +44,9 @@ src/
     Bersaglio.jsx         diagramma SVG del bersaglio 3D con lente
     sagome.js             silhouette originali delle specie e posizioni simboliche
     statistiche.js        progressi per domanda/livello, selezione pesata
+  games/lettura/
+    letture.js            cause, generatori delle rosate, testi e grado di accordo
+    Lettura.jsx           menu, rosata, riepilogo, nota di metodo
   games/tuner/
     modello.js            parametri, pesi, test e livelli (tutte le regole del gioco)
     Tuner.jsx             menu, partita, esito, spiegazione dei test

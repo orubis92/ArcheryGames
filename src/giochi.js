@@ -14,8 +14,8 @@ export const GIOCHI = [
     nome: 'Lettura del bersaglio',
     sottotitolo: 'Analisi della rosata',
     descrizione:
-      'Dodici frecce sul bersaglio: diagnostica l\'errore tecnico tra le cause plausibili.',
-    stato: 'in-arrivo',
+      'Dodici frecce sul viso: che tipo di variabilità racconta la rosata? Solo le letture su cui gli istruttori concordano.',
+    stato: 'pronto',
     icona: 'rosata',
   },
   {

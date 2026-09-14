@@ -381,3 +381,10 @@ cite { font-style: normal; color: var(--testo-2); font-size: 0.85rem; }
 .regole h3 { margin: 1rem 0 0.3rem; font-size: 1rem; }
 .regole ul { padding-left: 1.2rem; }
 .regole li { margin-bottom: 0.3rem; }
+
+/* ---- lettura del bersaglio */
+.viso { display: block; width: 100%; max-width: 380px; height: auto; margin: 0 auto; }
+.viso-n { font-size: 11px; font-weight: 700; fill: #1d2420; paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+.lettura .didascalia { text-align: center; font-size: 0.8rem; color: var(--testo-2); margin: 0.5rem 0 0; }
+.per-causa { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
+.per-causa li { display: flex; justify-content: space-between; font-size: 0.9rem; }
